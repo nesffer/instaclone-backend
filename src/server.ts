@@ -38,7 +38,7 @@ const resolvers = {
     movie: () => client.movie.findFirst(),
   },
   Mutation: {
-    createMovie: (_: any, { title, year, genre }: Movie) =>
+    createMovie: (_: void, { title, year, genre }: Movie) =>
       client.movie.create({
         data: {
           title,
@@ -46,7 +46,7 @@ const resolvers = {
           genre,
         },
       }),
-    updateMovie: (_: any, { id, title, year, genre }: Movie) =>
+    updateMovie: (_: void, { id, title, year, genre }: Movie) =>
       client.movie.update({
         where: { id },
         data: {
@@ -55,7 +55,7 @@ const resolvers = {
           genre,
         },
       }),
-    deleteMovie: (_: any, { id }: Movie) =>
+    deleteMovie: (_: void, { id }: Movie) =>
       client.movie.delete({ where: { id } }),
   },
 };
