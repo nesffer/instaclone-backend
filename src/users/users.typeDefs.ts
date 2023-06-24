@@ -15,4 +15,13 @@ export default gql`
     getUser(username: String): User
     getUsers: [User]
   }
+  type Mutation {
+    createUser(
+      firstName: String!
+      lastName: String
+      username: String!
+      email: String!
+      password: String!
+    ): User
+  }
 `;
