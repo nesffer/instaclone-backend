@@ -1,6 +1,7 @@
 import client from "../client";
 import User from "./users.interfaces";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export default {
   Mutation: {
@@ -48,8 +49,13 @@ export default {
           throw new Error("비밀번호가 틀렸습니다.");
         }
 
-        // FIXME: JWT Token 발행으로 수정
-        return { ok: true, token: "Coming soon!" };
+        const payload = { id: user.id };
+        const secretKey =
+          process.env.SECRET_KEY || "AlF8tKm03KI5L1KdMnzxw6KIo7BnMjuj";
+        const expiresIn = process.env.EXPIRES_IN || "1d";
+        const token = jwt.sign(payload, secretKey, { expiresIn });
+
+        return { ok: true, token };
       } catch (error: unknown) {
         let errorMessage = "";
         if (error instanceof Error) {
