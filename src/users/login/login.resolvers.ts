@@ -1,40 +1,10 @@
-import client from "../client";
-import User from "./users.interfaces";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import User from "../users.interfaces";
+import client from "../../client";
 
 export default {
   Mutation: {
-    createUser: async (
-      _: void,
-      { firstName, lastName, username, email, password }: User
-    ) => {
-      try {
-        const existingUser = await client.user.findFirst({
-          where: {
-            OR: [{ username }, { email }],
-          },
-        });
-
-        if (existingUser) {
-          throw new Error("이미 존재하는 사용자입니다.");
-        }
-
-        const hash = await bcrypt.hash(password, 10);
-
-        return client.user.create({
-          data: {
-            firstName,
-            lastName,
-            username,
-            email,
-            password: hash,
-          },
-        });
-      } catch (error) {
-        return error;
-      }
-    },
     login: async (_: void, { username, password }: User) => {
       try {
         const user = await client.user.findUnique({ where: { username } });
@@ -57,11 +27,9 @@ export default {
 
         return { ok: true, token };
       } catch (error: unknown) {
-        let errorMessage = "";
         if (error instanceof Error) {
-          errorMessage = error.message;
+          return { ok: false, error: error.message };
         }
-        return { ok: false, error: errorMessage };
       }
     },
   },
