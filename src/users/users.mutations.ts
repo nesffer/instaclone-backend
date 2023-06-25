@@ -45,13 +45,17 @@ export default {
         const passwordOk = await bcrypt.compare(password, user.password);
 
         if (!passwordOk) {
-          throw new Error("잘못된 비밀번호입니다.");
+          throw new Error("비밀번호가 틀렸습니다.");
         }
 
-        // FIXME: User 반환 대신 JWT Token 발행으로 수정
-        return user;
-      } catch (error) {
-        return error;
+        // FIXME: JWT Token 발행으로 수정
+        return { ok: true, token: "Coming soon!" };
+      } catch (error: unknown) {
+        let errorMessage = "";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        return { ok: false, error: errorMessage };
       }
     },
   },
