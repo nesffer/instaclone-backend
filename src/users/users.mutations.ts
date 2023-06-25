@@ -34,5 +34,25 @@ export default {
         return error;
       }
     },
+    login: async (_: void, { username, password }: User) => {
+      try {
+        const user = await client.user.findUnique({ where: { username } });
+
+        if (!user) {
+          throw new Error("존재하지 않는 사용자입니다.");
+        }
+
+        const passwordOk = await bcrypt.compare(password, user.password);
+
+        if (!passwordOk) {
+          throw new Error("잘못된 비밀번호입니다.");
+        }
+
+        // FIXME: User 반환 대신 JWT Token 발행으로 수정
+        return user;
+      } catch (error) {
+        return error;
+      }
+    },
   },
 };
