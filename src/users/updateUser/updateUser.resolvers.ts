@@ -1,18 +1,32 @@
-import bcrypt from "bcrypt";
-import User from "../users.interfaces";
-import client from "../../client";
+import bcrypt from 'bcrypt';
+import User from '../users.interfaces';
+import { Resolvers } from '../../types';
 
-export default {
+const resolvers: Resolvers = {
   Mutation: {
-    updateUser: async (
-      _: void,
-      { firstName, lastName, username, email, password }: User
-    ) => {
-      try {
-        const hash = await bcrypt.hash(password, 10);
+    async updateUser(_root, { firstName, lastName, username, email, password }: User, { loggedInUser, client }) {
+      if (!loggedInUser) {
+        return { ok: false, error: '사용자가 존재하지 않습니다.' };
+      }
 
-        const user = client.user.update({
-          where: { username },
+      try {
+        let hash;
+        if (password) {
+          hash = await bcrypt.hash(password, 10);
+        }
+
+        const duplicatedUser = await client.user.findFirst({
+          where: {
+            OR: [{ username }, { email }],
+          },
+        });
+
+        if (duplicatedUser) {
+          throw new Error('이미 존재하는 사용자입니다.');
+        }
+
+        const updatedUser = await client.user.update({
+          where: { id: loggedInUser.id },
           data: {
             firstName,
             lastName,
@@ -22,11 +36,11 @@ export default {
           },
         });
 
-        if (!user) {
-          throw new Error("사용자 정보를 수정할 수 없습니다.");
+        if (!updatedUser) {
+          throw new Error('사용자 정보를 수정할 수 없습니다.');
         }
 
-        return { ok: true, user };
+        return { ok: true, user: updatedUser };
       } catch (error) {
         if (error instanceof Error) {
           return { ok: false, error: error.message };
@@ -35,3 +49,5 @@ export default {
     },
   },
 };
+
+export default resolvers;

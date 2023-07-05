@@ -1,13 +1,10 @@
-import bcrypt from "bcrypt";
-import User from "../users.interfaces";
-import client from "../../client";
+import bcrypt from 'bcrypt';
+import User from '../users.interfaces';
+import { Resolvers } from '../../types';
 
-export default {
+const resolvers: Resolvers = {
   Mutation: {
-    createUser: async (
-      _: void,
-      { firstName, lastName, username, email, password }: User
-    ) => {
+    async createUser(_root, { firstName, lastName, username, email, password }: User, { client }) {
       try {
         const existingUser = await client.user.findFirst({
           where: {
@@ -16,7 +13,7 @@ export default {
         });
 
         if (existingUser) {
-          throw new Error("이미 존재하는 사용자입니다.");
+          throw new Error('이미 존재하는 사용자입니다.');
         }
 
         const hash = await bcrypt.hash(password, 10);
@@ -32,7 +29,7 @@ export default {
         });
 
         if (!user) {
-          throw new Error("사용자를 생성할 수 없습니다.");
+          throw new Error('사용자를 생성할 수 없습니다.');
         }
 
         return { ok: true, user };
@@ -44,3 +41,5 @@ export default {
     },
   },
 };
+
+export default resolvers;
