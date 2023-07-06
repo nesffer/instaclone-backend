@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "node build/server.js",
-    "dev": "nodemon --exec ts-node src/server.ts --ext ts,js",
+    "dev": "nodemon --exec ts-node src/server.ts --ext ts",
+    "debug": "nodemon --exec node --inspect-brk=0.0.0.0:9229 --require ts-node/register src/server.ts --ext ts",
     "build": "tsc",
     "migrate": "prisma migrate dev",
     "studio": "prisma studio"
