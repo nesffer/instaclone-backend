@@ -5,6 +5,8 @@ export default interface User {
   username: string;
   email: string;
   password: string;
+  bio?: string;
+  avatar?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -18,13 +18,15 @@ export const getUser = async (authorization: string) => {
 };
 
 // 클로저를 이용한 Resolver 보호
-export const protectedResolver = (resolver: Resolver) => (root: any, args: any, context: Context, info: any) => {
-  if (!context.loggedInUser) {
-    return {
-      ok: false,
-      error: '로그인이 필요합니다.',
-    };
-  }
+export function protectResolver(resolver: Resolver): Resolver {
+  return function (root: any, args: any, context: Context, info: any): { ok: boolean; error: string } | Resolver {
+    if (!context.loggedInUser) {
+      return {
+        ok: false,
+        error: '로그인이 필요합니다.',
+      };
+    }
 
-  return resolver(root, args, context, info);
-};
+    return resolver(root, args, context, info);
+  };
+}

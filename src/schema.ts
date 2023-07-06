@@ -1,12 +1,7 @@
-import { loadFilesSync } from "@graphql-tools/load-files";
-import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
-import { makeExecutableSchema } from "@graphql-tools/schema";
+import { loadFilesSync } from '@graphql-tools/load-files';
+import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
 
 const loadedTypeDefs = loadFilesSync(`${__dirname}/**/*.typeDefs.ts`);
 const loadedResolvers = loadFilesSync(`${__dirname}/**/*.resolvers.ts`);
-const typeDefs = mergeTypeDefs(loadedTypeDefs);
-const resolvers = mergeResolvers(loadedResolvers);
-
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-
-export default schema;
+export const typeDefs = mergeTypeDefs(loadedTypeDefs);
+export const resolvers = mergeResolvers(loadedResolvers);

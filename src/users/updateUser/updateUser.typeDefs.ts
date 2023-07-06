@@ -1,20 +1,9 @@
-import { gql } from "apollo-server";
+import gql from 'graphql-tag';
 
 export default gql`
-  type User {
-    id: ID!
-    firstName: String!
-    lastName: String
-    username: String!
-    email: String!
-    password: String!
-    createdAt: String!
-    updatedAt: String!
-  }
-  type updateUserResult {
+  type UpdateUserResult {
     ok: Boolean!
     error: String
-    user: User
   }
   type Mutation {
     updateUser(
@@ -23,6 +12,8 @@ export default gql`
       username: String
       email: String
       password: String
-    ): updateUserResult!
+      bio: String
+      avatar: String
+    ): UpdateUserResult!
   }
 `;

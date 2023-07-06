@@ -6,7 +6,7 @@ import { Resolvers } from '../../types';
 
 const resolvers: Resolvers = {
   Mutation: {
-    async login(_: void, { username, password }: User) {
+    async login(_root: void, { username, password }: User) {
       try {
         const user = await client.user.findUnique({ where: { username } });
 
@@ -31,8 +31,8 @@ const resolvers: Resolvers = {
         const token = jwt.sign(payload, secretKey, { expiresIn });
 
         return { ok: true, token };
-      } catch (error) {
-        return { ok: false, error };
+      } catch (error: any) {
+        return { ok: false, error: error.message };
       }
     },
   },

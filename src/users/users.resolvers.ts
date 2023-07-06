@@ -1,14 +1,18 @@
-import { Resolvers } from '../types';
+import { Context, Resolver } from '../types';
+import { protectResolver } from './users.utils';
+import { User } from '@prisma/client';
 
-const resolvers: Resolvers = {
-  Query: {
-    async getUser(_root, { username }, { client }) {
-      return client.user.findUnique({ where: { username } });
-    },
-    async getUsers(_root, _args, { client }) {
-      return client.user.findMany();
-    },
-  },
+const getUser: Resolver = async (_root: any, { username }: User, { client }: Context) => {
+  return client.user.findUnique({ where: { username } });
 };
 
-export default resolvers;
+const getUsers: Resolver = async (_root: any, _args: any, { client }: Context) => {
+  return client.user.findMany();
+};
+
+export default {
+  Query: {
+    getUser: protectResolver(getUser),
+    getUsers: protectResolver(getUsers),
+  },
+};
