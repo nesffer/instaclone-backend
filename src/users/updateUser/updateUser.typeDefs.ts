@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql`
+  scalar Upload
   type UpdateUserResult {
     ok: Boolean!
     error: String
@@ -13,7 +14,7 @@ export default gql`
       email: String
       password: String
       bio: String
-      avatar: String
+      avatar: Upload
     ): UpdateUserResult!
   }
 `;

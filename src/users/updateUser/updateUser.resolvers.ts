@@ -4,10 +4,11 @@ import { Resolver, Context } from '../../types';
 import { protectResolver } from '../users.utils';
 
 const updateUser: Resolver = async (
-  _root: any,
+  _root: void,
   { firstName, lastName, username, email, password, bio, avatar }: User,
   { loggedInUser, client }: Context,
 ) => {
+  console.log(avatar);
   if (!loggedInUser) {
     return { ok: false, error: '사용자가 존재하지 않습니다.' };
   }
