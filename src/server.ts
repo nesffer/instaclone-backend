@@ -4,12 +4,16 @@ require('dotenv').config();
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import {
+  ApolloServerPluginLandingPageProductionDefault,
+  ApolloServerPluginLandingPageLocalDefault,
+} from '@apollo/server/plugin/landingPage/default';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import logger from 'morgan';
 import { typeDefs, resolvers } from './schema';
 import client from './client';
 
@@ -20,12 +24,19 @@ const httpServer = http.createServer(app);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), ApolloServerPluginLandingPageLocalDefault()],
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    process.env.NODE_ENV === 'production'
+      ? ApolloServerPluginLandingPageProductionDefault({ footer: false })
+      : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+  ],
   csrfPrevention: false,
 });
 
 (async () => {
   await server.start();
+
+  app.use(logger('tiny'));
 
   app.use(
     '/graphql',
