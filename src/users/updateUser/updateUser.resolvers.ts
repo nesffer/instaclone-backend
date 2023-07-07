@@ -1,3 +1,4 @@
+import { createWriteStream } from 'fs';
 import bcrypt from 'bcrypt';
 import User from '../users.interfaces';
 import { Resolver, Context } from '../../types';
@@ -9,6 +10,13 @@ const updateUser: Resolver = async (
   { firstName, lastName, username, email, password, bio, avatar }: User,
   { loggedInUser, client }: Context,
 ) => {
+  // avatar 이미지 파일 저장
+  const { filename, createReadStream }: any = await avatar;
+  const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
+  const readStream = createReadStream();
+  const writeStream = createWriteStream(`${process.cwd()}/uploads/${newFilename}`);
+  readStream.pipe(writeStream);
+
   if (!loggedInUser) {
     return { ok: false, error: '사용자가 존재하지 않습니다.' };
   }

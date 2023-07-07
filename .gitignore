@@ -240,3 +240,6 @@ fabric.properties
 
 # Prisma
 prisma/migrations/
+
+# Uploads folder
+uploads/
