@@ -1,16 +1,17 @@
 import { getUser } from './users/users.utils';
 
 require('dotenv').config();
-import client from './client';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { typeDefs, resolvers } from './schema';
+import client from './client';
 
 const app = express();
 
@@ -30,10 +31,12 @@ const server = new ApolloServer({
     '/',
     cors<cors.CorsRequest>(),
     bodyParser.json(),
-    // expressMiddleware accepts the same arguments:
-    // an Apollo Server instance and optional configuration options
+    graphqlUploadExpress(),
     expressMiddleware(server, {
-      context: async ({ req }) => ({ loggedInUser: await getUser(<string>req.headers.authorization), client }),
+      context: async ({ req }) => ({
+        loggedInUser: await getUser(<string>req.headers.authorization),
+        client,
+      }),
     }),
   );
 

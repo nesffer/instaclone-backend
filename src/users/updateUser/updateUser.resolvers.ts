@@ -2,13 +2,13 @@ import bcrypt from 'bcrypt';
 import User from '../users.interfaces';
 import { Resolver, Context } from '../../types';
 import { protectResolver } from '../users.utils';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 
 const updateUser: Resolver = async (
-  _root: void,
+  _root: any,
   { firstName, lastName, username, email, password, bio, avatar }: User,
   { loggedInUser, client }: Context,
 ) => {
-  console.log(avatar);
   if (!loggedInUser) {
     return { ok: false, error: '사용자가 존재하지 않습니다.' };
   }
@@ -55,6 +55,7 @@ const updateUser: Resolver = async (
 };
 
 export default {
+  Upload: GraphQLUpload,
   Mutation: {
     updateUser: protectResolver(updateUser),
   },
