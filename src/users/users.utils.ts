@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import client from '../client';
-import { Context, Resolver } from '../types';
+import client from '../client.js';
+import { Context, Resolver } from '../types.js';
 
 export const getUser = async (authorization: string) => {
   try {

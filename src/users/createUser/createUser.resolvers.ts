@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-import User from '../users.interfaces';
-import { Context, Resolver } from '../../types';
-import { protectResolver } from '../users.utils';
+import User from '../users.interfaces.js';
+import { Context, Resolver } from '../../types.js';
+import { protectResolver } from '../users.utils.js';
 
 const createUser: Resolver = async (
   _root,

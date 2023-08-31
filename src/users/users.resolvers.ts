@@ -1,5 +1,5 @@
-import { Context, Resolver } from '../types';
-import { protectResolver } from './users.utils';
+import { Context, Resolver } from '../types.js';
+import { protectResolver } from './users.utils.js';
 import { User } from '@prisma/client';
 
 const getUser: Resolver = async (_root: void, { username }: User, { client }: Context) => {

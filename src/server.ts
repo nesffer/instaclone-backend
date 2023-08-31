@@ -1,21 +1,22 @@
-import { getUser } from './users/users.utils';
-
-require('dotenv').config();
+import dotenv from 'dotenv';
+import { getUser } from './users/users.utils.js';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import {
-  ApolloServerPluginLandingPageProductionDefault,
   ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default';
-import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
-import { typeDefs, resolvers } from './schema';
-import client from './client';
+import { resolvers, typeDefs } from './schema.js';
+import client from './client.js';
+
+dotenv.config();
 
 const app = express();
 
@@ -33,24 +34,22 @@ const server = new ApolloServer({
   csrfPrevention: false,
 });
 
-(async () => {
-  await server.start();
+await server.start();
 
-  app.use(logger('tiny'));
+app.use(logger('tiny'));
 
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>(),
-    bodyParser.json(),
-    graphqlUploadExpress(),
-    expressMiddleware(server, {
-      context: async ({ req }) => ({
-        loggedInUser: await getUser(<string>req.headers.authorization),
-        client,
-      }),
+app.use(
+  '/graphql',
+  cors<cors.CorsRequest>(),
+  bodyParser.json(),
+  graphqlUploadExpress(),
+  expressMiddleware(server, {
+    context: async ({ req }) => ({
+      loggedInUser: await getUser(<string>req.headers.authorization),
+      client,
     }),
-  );
+  }),
+);
 
-  await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
-  console.log(`🚀 Server ready at http://localhost:4000/`);
-})();
+await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
+console.log(`🚀 Server ready at http://localhost:4000/`);

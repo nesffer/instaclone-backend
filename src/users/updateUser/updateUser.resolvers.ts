@@ -1,9 +1,9 @@
 import { createWriteStream } from 'fs';
 import bcrypt from 'bcrypt';
-import User from '../users.interfaces';
-import { Resolver, Context } from '../../types';
-import { protectResolver } from '../users.utils';
-import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
+import User from '../users.interfaces.js';
+import { Context, Resolver } from '../../types.js';
+import { protectResolver } from '../users.utils.js';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
 
 const updateUser: Resolver = async (
   _root: any,

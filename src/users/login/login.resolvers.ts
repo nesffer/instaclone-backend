@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../users.interfaces';
-import client from '../../client';
-import { Resolvers } from '../../types';
+import User from '../users.interfaces.js';
+import client from '../../client.js';
+import { Resolvers } from '../../types.js';
 
 const resolvers: Resolvers = {
   Mutation: {
